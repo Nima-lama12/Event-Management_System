@@ -585,7 +585,21 @@ void DeleteOrg(){
     scanf("%d", &Key);
     while(fscanf(fp, "%d %s %s", &o.Oid, o.OName, o.Ophone)!=EOF){
         if(o.Oid == Key){
-            printf()
+            fprintf(temp, "%d %S %d\n", o.Oid, o.OName, o.Ophone);
+        }
+        else{
+            deleted = 1;
         }
     }
+    fclose(fp);
+    fclose(temp);
+    remove("Organizer.txt");
+    rename("temp.txt", "ORganizer.txt");
+    if(deleted){
+        printf("!!Deleted Successfully.!!");
+    }
+    else{
+        printf("!!Cannot Delete the Organizer!!");
+    }
+    
 }
