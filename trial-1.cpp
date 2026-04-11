@@ -21,10 +21,16 @@ struct Organizer{
     char Ophone[20];
 };
 
+struct Registration{
+    int Rid;
+    int Pid;
+    int Eid;
+    char status[20];
+};
 int getEventLastID();
 int getPartLastID();
 void AddEvent(); // Function to add event
-void DisplayEvent(); // Function to diaplay all the events
+void DisplayEvent(); // Function to display all the events
 void SearchEvent(); // Function to Search a event
 void UpdateEvent(); // Function to update an event
 void DeleteEvent(); // Function to delete an event
@@ -39,6 +45,11 @@ void DisplayOrg();
 void SearchOrg();
 void UpdateOrg();
 void DeleteOrg();
+int getRegLastID();
+void AddReg();
+void DisplayReg();
+void DeleteReg();
+void UpdateRegStatus();
 //Main Function Starts Here
 int main(){
     int mainChoice, choice;
@@ -47,7 +58,8 @@ int main(){
     printf("1. Event Menu\n");
     printf("2. Participants Menu\n");
     printf("3. Organizer\n");
-    printf("4. Exit\n");
+    printf("4. Registration\n");
+    printf("5. Exit\n");
     scanf("%d", &mainChoice);
     switch(mainChoice){
         case 1:
@@ -55,7 +67,7 @@ int main(){
         {
         printf("====EVENT MENU====\n");
         printf("1. Add an Event\n");
-        printf("2. display Event\n");
+        printf("2. Display Event\n");
         printf("3. Search for the Event\n");
         printf("4. Update Event\n");
         printf("5. Delete and Event\n");
@@ -78,7 +90,6 @@ int main(){
             DeleteEvent();
             break;
             case 6:
-            break;
             break;
             default:
             printf("!!Please enter valid command!!\n");
@@ -124,7 +135,7 @@ int main(){
         break;
         case 3:
          while (1){
-        printf("====PARTICIPANTS MENU====\n");
+        printf("====Organizer MENU====\n");
         printf("1. Register Organizer\n");
         printf("2. Display Organizer\n");
         printf("3. Search Organizer\n");
@@ -158,6 +169,37 @@ int main(){
         }
         break;
         case 4:
+        while (1){
+            printf("===Registration Menu===\n");
+            printf("1. Add Registration\n");
+            printf("2. Display Registration\n");
+            printf("3. Delete Registration\n");
+            printf("4. Update Status\n");
+            printf("5. Back\n");
+            scanf("%d", &choice);
+            switch (choice){
+                case 1:
+                AddReg();
+                break;
+                case 2:
+                DisplayReg();
+                break;
+                case 3:
+                DeleteReg();
+                break;
+                case 4:
+                UpdateRegStatus();
+                break;
+                case 5:
+                break;
+                default:
+                printf("Please enter a valid command!!\n");
+                break;
+            }
+            if (choice == 5) break;
+        }
+        break;
+        case 5:
         return 0;
         default:
         printf("!!Invalid Command!!");
@@ -166,14 +208,14 @@ int main(){
 }
 }
 
-int getEventLastID(){          // This gives the latest numebr to us for the unique ID
+int getEventLastID(){          // This gives the latest number to us for the unique ID
     struct Event e;
     FILE *fp;
     fp = fopen("Event.txt", "r");
     int lastID=0;
     if (fp == NULL){
         printf("!!Cannot fetch the id!!");
-        return 1;
+        return 0;
     }
     while(fscanf(fp, "%d %s %s %d", &e.Eid, e.event,  e.date, &e.maxSeats)!=EOF){
         lastID = e.Eid;
@@ -217,7 +259,7 @@ void DisplayEvent(){             //This function displays all the data
     }
     printf("EventID\tEvent Name\tEvent Date\tMaxseats\n");
     while(fscanf(fp, "%d %s %s %d", &e.Eid, e.event, e.date, &e.maxSeats)!=EOF){
-        printf("%d \t %s \t %s \t %d \n", e.Eid, e.event, e.date, e.maxSeats);
+        printf("%d\t%s\t%s\t%d\n", e.Eid, e.event, e.date, e.maxSeats);
     }
     fclose(fp);
 }
@@ -260,11 +302,11 @@ void UpdateEvent(){                // Updates a specific Event
     scanf("%d", &key);
     while(fscanf(fp, "%d %s %s %d", &e.Eid, e.event, e.date, &e.maxSeats)!=EOF){
         if(e.Eid == key){
-            printf("Enetr Event name: ");
+            printf("Enter Event name: ");
             scanf("%s", e.event);
-            printf("Enetr Event Date: ");
+            printf("Enter Event Date: ");
             scanf("%s", e.date);
-            printf("Enetr maxSeats: ");
+            printf("Enter maxSeats: ");
             scanf("%d", &e.maxSeats);
             update = 1;
         }
@@ -296,7 +338,7 @@ void DeleteEvent(){               //Deletes an specific Event
     scanf("%d", &key);
     while(fscanf(fp, "%d %s %s %d", &e.Eid, e.event, e.date, &e.maxSeats)!=EOF){
         if(e.Eid != key){
-            fprintf(temp, "%d %s %s %d\n", e.Eid, e.event, e.date, e.maxSeats);
+            fprintf(temp, "%d\t%s\t%s\t%d\n", e.Eid, e.event, e.date, e.maxSeats);
         }
         else{
             deleted = 1;
@@ -321,7 +363,7 @@ int getPartLastID(){           // This gives the latest numebr to us for the uni
     int lastID=0;
     if (fp == NULL){
         printf("!!Cannot fetch the id!!");
-        return 1;
+        return 0;
     }
     while(fscanf(fp, "%d %s %s", &p.Pid, p.Pname, p.phone)!=EOF){
         lastID = p.Pid;
@@ -349,7 +391,7 @@ void AddPart(){             //This function gives helps to create an Event
         printf("Enter Phone no. of Participant: ");
         scanf("%s", p[i].phone);
         fprintf(fp, "%d\t%s\t%s\n", p[i].Pid, p[i].Pname, p[i].phone);
-        printf("Event Stored with ID: %d\n\n", p[i].Pid);
+        printf("Participant Stored with ID: %d\n\n", p[i].Pid);
     }
     fclose(fp);
 }
@@ -365,7 +407,7 @@ void DisplayPart(){             //This function displays all the data
     }
     printf("ParticipantID\tParticipant Name\tPhone no.\n");
     while(fscanf(fp, "%d %s %s", &p.Pid, p.Pname, p.phone)!=EOF){
-        printf("%d \t %s \t %s \n", p.Pid, p.Pname, p.phone);
+        printf("%d\t%s\t%s\n", p.Pid, p.Pname, p.phone);
     }
     fclose(fp);
 }
@@ -408,9 +450,9 @@ void UpdatePart(){                // Updates a specific Event
     scanf("%d", &key);
     while(fscanf(fp, "%d %s %s", &p.Pid, p.Pname, p.phone)!=EOF){
         if(p.Pid == key){
-            printf("Enetr Participant name: ");
+            printf("Enter Participant name: ");
             scanf("%s", p.Pname);
-            printf("Enetr Participant Phone no.: ");
+            printf("Enter Participant Phone no.: ");
             scanf("%s", p.phone);
             update = 1;
         }
@@ -442,7 +484,7 @@ void DeletePart(){               //Deletes an specific Event
     scanf("%d", &key);
     while(fscanf(fp, "%d %s %s", &p.Pid, p.Pname, p.phone)!=EOF){
         if(p.Pid != key){
-            fprintf(temp, "%d %s %s\n", p.Pid, p.Pname, p.phone);
+            fprintf(temp, "%d\t%s\t%s\n", p.Pid, p.Pname, p.phone);
         }
         else{
             deleted = 1;
@@ -469,18 +511,18 @@ int getOrgLastID(){
         printf("!!cannot Fetch Organizers.!!");
         return 1;
     }
-    while(fscanf(fp, "%d %s, %s", &o.Oid, o.OName, o.Ophone)!=EOF){
+    while(fscanf(fp, "%d %s %s", &o.Oid, o.OName, o.Ophone)!=EOF){
         LastID = o.Oid;
     }
     fclose(fp);
     return LastID;
 }
 
-void addOrg(){
+void AddOrg(){
     struct Organizer o[100];
     int n;
     FILE *fp;
-    fp = fopen("Organizer.txt", "w");
+    fp = fopen("Organizer.txt", "a");
     if(fp==NULL){
         printf("!!cannot add data!!");
         return;
@@ -493,7 +535,7 @@ void addOrg(){
         scanf("%s", o[i].OName);
         printf("\nEnter the Contact of Organizer: ");
         scanf("%s", o[i].Ophone);
-        fprintf(fp, "%d\t%s\t%s", o[i].Oid, o[i].OName, o[i].Ophone);
+        fprintf(fp, "%d\t%s\t%s\n", o[i].Oid, o[i].OName, o[i].Ophone);
         printf("\nEvent Stored with ID: %d\n", o[i].Oid);
     }
     fclose(fp);
@@ -509,7 +551,7 @@ void DisplayOrg(){
     }
     printf("organizerID\tOrganizer Name\tContact");
     while(fscanf(fp, "%d %s %s", &o.Oid, o.OName, o.Ophone)!=EOF){
-        printf("%d \t %s \t %s\n", o.Oid, o.OName, o.Ophone);
+        printf("%d\t%s\t%s\n", o.Oid, o.OName, o.Ophone);
     }
     fclose(fp);
 }
@@ -525,7 +567,7 @@ void SearchOrg(){
     }
     printf("Enter the ID of the Organizer: ");
     scanf("%d", &key);
-    while(fscanf(fp,"%d %s %S", &o.Oid, o.OName, o.Ophone)!=EOF){
+    while(fscanf(fp,"%d %s %s", &o.Oid, o.OName, o.Ophone)!=EOF){
         if (key == o.Oid){
             printf("Organizer ID: %d \t Name: %s \t Contact: %s", o.Oid, o.OName, o.Ophone);
             flag = 1;
@@ -557,7 +599,7 @@ void UpdateOrg(){
             scanf("%s", o.Ophone);
             update = 1;
         }
-        fprintf(temp, "%d\t%s\t%s", o.Oid, o.OName, o.Ophone);
+        fprintf(temp, "%d\t%s\t%s\n", o.Oid, o.OName, o.Ophone);
     }
     fclose(fp);
     fclose(temp);
@@ -581,11 +623,11 @@ void DeleteOrg(){
         printf("!!Cannot Open File!!");
         return;
     }
-    printf("enter an ID to delete an Organizer: ");
+    printf("Enter an ID to delete an Organizer: ");
     scanf("%d", &Key);
     while(fscanf(fp, "%d %s %s", &o.Oid, o.OName, o.Ophone)!=EOF){
-        if(o.Oid == Key){
-            fprintf(temp, "%d %S %d\n", o.Oid, o.OName, o.Ophone);
+        if(o.Oid != Key){
+            fprintf(temp, "%d\t%s\t%s\n", o.Oid, o.OName, o.Ophone);
         }
         else{
             deleted = 1;
@@ -594,7 +636,7 @@ void DeleteOrg(){
     fclose(fp);
     fclose(temp);
     remove("Organizer.txt");
-    rename("temp.txt", "ORganizer.txt");
+    rename("temp.txt", "Organizer.txt");
     if(deleted){
         printf("!!Deleted Successfully.!!");
     }
@@ -602,4 +644,211 @@ void DeleteOrg(){
         printf("!!Cannot Delete the Organizer!!");
     }
     
+}
+
+int getRegLastID(){
+    struct Registration r;
+    FILE *fp;
+    int LastID = 0;
+    
+    fp = fopen("Registration.txt", "r");
+    if(fp==NULL){
+        printf("!!Cannot Fetch Organizers.!!");
+        return 0;
+    }
+    while(fscanf(fp, "%d %d %d %s", &r.Rid, &r.Pid, &r.Eid, r.status) != EOF){
+        LastID = r.Rid;
+    }
+
+    fclose(fp);
+    return LastID;
+}
+int countRegistrations(int Eid){
+    struct Registration r;
+    FILE *fp;
+    int count = 0;
+
+    fp = fopen("Registration.txt", "r");
+    if(fp == NULL) return 0;
+
+    while(fscanf(fp, "%d %d %d %s", &r.Rid, &r.Pid, &r.Eid, r.status) != EOF){
+        if(r.Eid == Eid){
+            count++;
+        }
+    }
+
+    fclose(fp);
+    return count;
+}
+int isAlreadyRegistered(int Pid, int Eid){
+    struct Registration r;
+    FILE *fp;
+
+    fp = fopen("Registration.txt", "r");
+    if(fp == NULL) return 0;
+
+    while(fscanf(fp, "%d %d %d %s", &r.Rid, &r.Pid, &r.Eid, r.status) != EOF){
+        if(r.Pid == Pid && r.Eid == Eid){
+            fclose(fp);
+            return 1;
+        }
+    }
+
+    fclose(fp);
+    return 0;
+}
+void AddReg(){
+    struct Registration r;
+    FILE *fp;
+    int Pid, Eid;
+    int foundP = 0;
+    int foundE = 0;
+    struct Participant p;        //Check if participant exists
+    FILE *fp1;
+    fp1 = fopen ("Participant.txt", "r");
+    if(fp1 == NULL){
+    printf("Participant file not found!\n");
+    return;
+    }
+    printf("Enter Participants ID: ");
+    scanf("%d", &Pid);
+    while (fscanf(fp1,"%d %s %s", &p.Pid, p.Pname, p.phone) != EOF){
+        if(p.Pid == Pid){
+            foundP = 1;
+            break;
+        }
+    }
+    fclose(fp1);
+    struct Event e;           //Check if event exists
+    FILE *fp2;
+    fp2 = fopen ("Event.txt", "r");
+    if(fp2 == NULL){
+    printf("Event file not found!\n");
+    return;
+    }
+    printf("Enter Event ID: ");
+    scanf("%d", &Eid);
+    while(fscanf(fp2, "%d %s %s %d", &e.Eid, e.event, e.date, &e.maxSeats)!=EOF){
+        if(e.Eid == Eid){
+            foundE = 1;
+            break;
+        }
+    }
+    fclose(fp2);
+    if(!foundP || !foundE){
+        printf("Invalid Participant or Event ID!\n");
+        return;
+    }
+    if(isAlreadyRegistered(Pid, Eid)){  //Check duplication registration
+        printf("Participant already registered for this event!\n");
+        return;
+    }
+    int current = countRegistrations(Eid); //seat check
+    if(current >= e.maxSeats){
+        printf("Event is FULL! Cannot register.\n");
+        return;
+    }
+    
+    printf("Enter registration status (Confirmed/Pending/Cancelled): ");
+    scanf("%s", r.status);
+    // Save registration
+    fp = fopen("Registration.txt", "a");
+
+    if(fp == NULL){
+    printf("Cannot open registration file!");
+    return;
+}
+    r.Rid = getRegLastID() + 1;
+    r.Pid = Pid;
+    r.Eid = Eid;
+
+    fprintf(fp, "%d %d %d %s\n", r.Rid, r.Pid, r.Eid, r.status);
+
+    printf("Registration successful! ID = %d\n", r.Rid);
+
+    fclose(fp);
+}
+
+void DisplayReg(){
+    struct Registration r;
+    FILE *fp;
+
+    fp = fopen("Registration.txt", "r");
+
+    if(fp == NULL){
+        printf("No registrations found!!\n");
+        return;
+    }
+
+    printf("RegistrationID\tParticipantID\tEventID\tStatus\n");
+
+    while(fscanf(fp, "%d %d %d %s", &r.Rid, &r.Pid, &r.Eid, r.status) != EOF){
+        printf("%d\t%d\t%d\t%s\n", r.Rid, r.Pid, r.Eid, r.status);
+    }
+
+    fclose(fp);
+}
+
+void DeleteReg(){
+    struct Registration r;
+    FILE *fp, *temp;
+
+    int key, found = 0;
+
+    fp = fopen("Registration.txt", "r");
+    temp = fopen("temp.txt", "w");
+
+    printf("Enter Registration ID to delete: ");
+    scanf("%d", &key);
+
+    while(fscanf(fp, "%d %d %d %s", &r.Rid, &r.Pid, &r.Eid, r.status) != EOF){
+        if(r.Rid != key){
+            fprintf(temp, "%d\t%d\t%d\t%s\n", r.Rid, r.Pid, r.Eid, r.status);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(fp);
+    fclose(temp);
+
+    remove("Registration.txt");
+    rename("temp.txt", "Registration.txt");
+
+    if(found)
+        printf("Deleted successfully!\n");
+    else
+        printf("Not found!\n");
+}
+
+void UpdateRegStatus(){
+    struct Registration r;
+    FILE *fp, *temp;
+    int key, found = 0;
+
+    fp = fopen("Registration.txt", "r");
+    temp = fopen("temp.txt", "w");
+
+    printf("Enter Registration ID: ");
+    scanf("%d", &key);
+
+    while(fscanf(fp, "%d %d %d %s", &r.Rid, &r.Pid, &r.Eid, r.status) != EOF){
+        if(r.Rid == key){
+            printf("Enter new status (Confirmed/Cancelled): ");
+            scanf("%s", r.status);
+            found = 1;
+        }
+        fprintf(temp, "%d\t%d\t%d\t%s\n", r.Rid, r.Pid, r.Eid, r.status);
+    }
+
+    fclose(fp);
+    fclose(temp);
+
+    remove("Registration.txt");
+    rename("temp.txt", "Registration.txt");
+
+    if(found)
+        printf("Status Updated!\n");
+    else
+        printf("Not found!\n");
 }
